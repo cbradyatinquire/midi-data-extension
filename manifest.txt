@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Extension-Name: midi-data
+Class-Manager: midi.MidiDataExtension
+NetLogo-Extension-API-Version: 5.0
