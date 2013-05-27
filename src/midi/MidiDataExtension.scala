@@ -11,21 +11,37 @@ import org.nlogo.api._
  */
 class MidiDataExtension extends DefaultClassManager {
 
-  val reciever = new MidiDataCollector
-  /**
-   * Loads the primitives in the extension. This is called once per model compilation.
-   *
-   * @param primManager The manager to transport the primitives to NetLogo
-   */
+  val dataInterface = new MidiDataCollector
+
   override def load(primManager: PrimitiveManager) {
     primManager.addPrimitive("read", Read)
+    primManager.addPrimitive("open", Open)
+    primManager.addPrimitive("close", Close)
   }
 
   object Read extends DefaultReporter {
     override def getSyntax: Syntax = Syntax.reporterSyntax( Array(Syntax.NumberType), Syntax.NumberType )
     def report(args: Array[Argument], context: Context): AnyRef = {
       val register = args(0).getIntValue
-      Double.box(reciever.getRegister( register ))
+      Double.box(dataInterface.getRegister( register ))
     }
   }
+
+  object Open extends DefaultCommand {
+    def perform(args: Array[Argument], context: Context) {
+      dataInterface.init()
+    }
+  }
+
+  object Close extends DefaultCommand {
+    def perform(args: Array[Argument], context: Context) {
+      dataInterface.closeCommunications()
+    }
+  }
+
+  override def unload(em: ExtensionManager) {
+    super.unload(em)
+    dataInterface.closeCommunications()
+  }
+
 }
