@@ -28,10 +28,10 @@ ticks
 30.0
 
 BUTTON
-19
-62
-194
-95
+20
+118
+195
+151
 NIL
 show midi-data:read register
 NIL
@@ -45,19 +45,53 @@ NIL
 1
 
 SLIDER
-18
-98
-193
-131
+19
+154
+194
+187
 register
 register
 0
 15
-10
+5
 1
 1
 NIL
 HORIZONTAL
+
+BUTTON
+20
+58
+187
+91
+NIL
+midi-data:open
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+79
+223
+206
+256
+NIL
+midi-data:close
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

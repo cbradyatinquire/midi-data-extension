@@ -2,6 +2,7 @@ package midi
 
 import javax.sound.midi._
 import org.nlogo.api.ExtensionException
+import com.sun.media.sound.MidiInDeviceProvider
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,23 +19,58 @@ class MidiDataCollector extends Receiver{
     else -1
   }
 
+
   private var transmitter: Transmitter = null
-  private var tdevice:MidiDevice = null
+  private var transDevice: MidiDevice = null
 
   def init() {
-    val transOption = MidiSystem.getMidiDeviceInfo.toList.find( deviceInfo => MidiSystem.getMidiDevice( deviceInfo ).getTransmitter != null)
-    try {
-      tdevice         = MidiSystem.getMidiDevice( transOption.getOrElse( throw new ExtensionException("No Midi Device connected") ) )
-      transmitter     = tdevice.getTransmitter
+    if (transDevice != null ) closeCommunications()
+    transmitter = null
 
-      if (! tdevice.isOpen ) {
-        tdevice.open()
+
+    val availableDeviceInfos = MidiSystem.getMidiDeviceInfo.toList
+
+
+
+   /* availableDevices.foreach{ deviceInfo: MidiDevice.Info =>
+      val device = MidiSystem.getMidiDevice( deviceInfo )
+      val trans = device.getTransmitter
+      println( "device with info " + deviceInfo.getDescription  )
+      if ( trans == null ) println("NO TRANSMITTER")
+      else println( "A TRANSMITTER: " + trans.getClass.toString )
+      if (trans.isInstanceOf[MidiInDeviceProvider]) println("VICTORY IS MINE")
+    }
+*/
+
+
+    availableDeviceInfos.foreach(y => println(y.getDescription + ", " + y.getVendor + ", " + y.isInstanceOf[Sequencer]) + ", " + y.isInstanceOf[Synthesizer])
+    val hardwareCandidateInfo = availableDeviceInfos.find( deviceInfo => !deviceInfo.getDescription.contains("Software") )
+    val candidateDevice = MidiSystem.getMidiDevice( hardwareCandidateInfo.getOrElse( throw new ExtensionException("No Midi-Compliant Hardware Device connected") ) )
+    println("name = " + candidateDevice.getDeviceInfo.getName)
+    val candidateTransmitter =  candidateDevice.getTransmitter
+    /*
+    && deviceToTest.getTransmitter != null && deviceToTest.getTransmitter.isInstanceOf[MidiInDeviceProvider]  )
+        }
+     */
+    if ( candidateTransmitter == null) throw new ExtensionException("No Available transmitter in hardware device " + candidateDevice.getDeviceInfo.getDescription )
+    //if ( !candidateTransmitter.isInstanceOf[MidiInDeviceProvider] ) throw new ExtensionException("Hardware device " + candidateDevice.getDeviceInfo.getDescription + " is not a MIDI input device.")
+    try {
+
+      transDevice     = candidateDevice
+      transmitter     = candidateTransmitter
+
+      println("transdevice: " + transDevice.getDeviceInfo)
+      println("transmitter: " + transmitter.toString)
+
+      if (! transDevice.isOpen ) {
+        transDevice.open()
         transmitter.setReceiver(this)
       }
     }
     catch {
       case e: MidiUnavailableException => throw new ExtensionException("Midi Device Unavailable"); e.printStackTrace()
     }
+
   }
 
   def send(message: MidiMessage, timeStamp: Long) {
@@ -53,6 +89,7 @@ class MidiDataCollector extends Receiver{
   def close() {}
 
   def closeCommunications() {
-    tdevice.close()
+    if (transDevice != null)
+      transDevice.close()
   }
 }
