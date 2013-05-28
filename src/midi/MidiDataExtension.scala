@@ -12,7 +12,6 @@ import org.nlogo.api._
 class MidiDataExtension extends DefaultClassManager {
 
   val dataInterface = new MidiDataCollector
-  com.sun.media.sound.JDK13Services.setCachingPeriod(0)
 
   override def load(primManager: PrimitiveManager) {
     primManager.addPrimitive("read", Read)

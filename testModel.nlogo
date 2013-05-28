@@ -1,13 +1,13 @@
 extensions [ midi-data ]
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+685
 10
-649
-470
+961
+307
 16
 16
-13.0
+8.061
 1
 10
 1
@@ -77,10 +77,10 @@ NIL
 1
 
 BUTTON
-79
-223
-206
-256
+19
+202
+197
+235
 NIL
 midi-data:close
 NIL
@@ -92,6 +92,74 @@ NIL
 NIL
 NIL
 1
+
+PLOT
+248
+13
+662
+303
+DEMO PLOTS
+ticks
+reading
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" "set-plot-x-range max (list (ticks - plot-window) 0) max (list ticks 1)"
+PENS
+"default" 1.0 0 -14730904 true "" "plot midi-data:read 5"
+"pen-1" 1.0 0 -10873583 true "" "plot midi-data:read 8"
+
+BUTTON
+19
+18
+184
+51
+setup
+ca reset-ticks
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+304
+380
+433
+413
+NIL
+every .05 [ tick ]
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+307
+336
+650
+369
+plot-window
+plot-window
+0
+5000
+500
+1
+1
+ticks
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
